@@ -7,13 +7,14 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load local environment variables from .env
-load_dotenv(BASE_DIR / ".env")
+# Load the .env file from the directory containing manage.py.
+# override=True ensures local .env values override old Windows variables.
+load_dotenv(BASE_DIR / ".env", override=True)
 
 # Security settings
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",
-    "django-insecure-local-development-key-change-before-deployment"
+    "django-insecure-local-development-key-change-before-deployment",
 )
 
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
@@ -74,9 +75,15 @@ TEMPLATES = [
 WSGI_APPLICATION = "coolshop.wsgi.application"
 
 # Database configuration
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 
 if DATABASE_URL:
+    if "your_neon_host" in DATABASE_URL.lower():
+        raise ValueError(
+            "DATABASE_URL still contains the placeholder "
+            "'your_neon_host'. Correct it in your .env file."
+        )
+
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -85,9 +92,11 @@ if DATABASE_URL:
             ssl_require=True,
         )
     }
+
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
 else:
-    # Local development fallback
+    # Use SQLite only when DATABASE_URL is not configured.
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -98,16 +107,28 @@ else:
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "NumericPasswordValidator"
+        ),
     },
 ]
 
@@ -140,6 +161,7 @@ if os.environ.get("CLOUDINARY_URL"):
         "BACKEND": "shop.storage.CloudinaryMediaStorage",
     }
 
+# Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -155,4 +177,3 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
