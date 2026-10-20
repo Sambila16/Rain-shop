@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block content %}<h2>Today</h2>
+<div class="stats"><div class="card"><b>TSh {{ total|floatformat:0 }}</b>sales today</div><div class="card"><b>{{ count }}</b>transactions</div><div class="card"><b>{{ low|length }}</b>low-stock items</div></div>
+<h3>Low stock</h3>{% for p in low %}<p>{{ p.name }}: {{ p.quantity }} {{ p.unit }}(s) left</p>{% empty %}<p>Every product is well stocked.</p>{% endfor %}
+<h3>Expiring within 30 days</h3>{% for p in expiring %}<p>{{ p.name }}: {{ p.expiry }}</p>{% empty %}<p>Nothing is close to expiry.</p>{% endfor %}
+<h3>Recent sales</h3><table>{% for s in recent %}<tr><td>{{ s.date|date:"d M H:i" }}</td><td>{{ s.product.name }} x {{ s.quantity }}</td><td>TSh {{ s.total|floatformat:0 }}</td></tr>{% empty %}<tr><td>No sales yet.</td></tr>{% endfor %}</table>{% endblock %}

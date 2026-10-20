@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}<h2>Monthly report</h2>
+<form method="get" class="inline"><input type="month" name="month" value="{{ month }}"><button class="btn">Show month</button></form>
+<div class="stats"><div class="card"><b>TSh {{ revenue|floatformat:0 }}</b>sales</div><div class="card"><b>TSh {{ profit|floatformat:0 }}</b>profit</div><div class="card"><b>TSh {{ capital|floatformat:0 }}</b>70% to capital</div><div class="card"><b>TSh {{ new_profit|floatformat:0 }}</b>30% new profit</div></div>
+<table><tr><th>Date</th><th>Product</th><th>Qty</th><th>Payment</th><th>Total</th><th>Profit</th></tr>{% for s in sales %}<tr><td>{{ s.date|date:"d M" }}</td><td>{{ s.product.name }}</td><td>{{ s.quantity }}</td><td>{{ s.get_payment_display }}</td><td>{{ s.total|floatformat:0 }}</td><td>{{ s.profit|floatformat:0 }}</td></tr>{% empty %}<tr><td colspan="6">No sales in this month.</td></tr>{% endfor %}</table>{% endblock %}
