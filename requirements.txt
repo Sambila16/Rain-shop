@@ -5,3 +5,4 @@ whitenoise
 dj-database-url
 psycopg[binary]
 cloudinary
+python-dotenv
