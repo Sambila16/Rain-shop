@@ -23,6 +23,11 @@ TEMPLATES = [{'BACKEND': 'django.template.backends.django.DjangoTemplates', 'APP
 WSGI_APPLICATION = 'coolshop.wsgi.application'
 DATABASES = {'default': dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
     conn_max_age=300, conn_health_checks=True, ssl_require=bool(os.environ.get('DATABASE_URL')))}
+if os.environ.get("DATABASE_URL"):
+       import dj_database_url
+       DATABASES["default"] = dj_database_url.parse(
+           os.environ["DATABASE_URL"], conn_max_age=60, conn_health_checks=True
+       )
 if os.environ.get('DATABASE_URL'):
     DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 STATIC_URL = 'static/'
