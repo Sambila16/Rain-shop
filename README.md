@@ -62,4 +62,6 @@ The slideshow photos are in `shop/static/img/` (the main photo) and `shop/static
 
 ## Before putting it online
 
+consider this section since it is important during the deployment phase
+
 The settings are for development. Before deploying, change `SECRET_KEY`, set `DEBUG = False`, set `ALLOWED_HOSTS` to your domain, and serve static and media files from your host.
